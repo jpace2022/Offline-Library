@@ -1,0 +1,3 @@
+__lib("t",637,
+["AmRRON/TAPRN Page _____ of _____ Net Control Station (NCS) Log NCS Call Sign: Date: Band: Mode: Freq: NWOTW (Net Word Of The Week): NCS Location: Net Time (Local): Net Time (Zulu) : Time Call Sign Name State City or County Check In Relayed by # of CH3 Contacts Dir Rel","Mode: Voice or Digital. If digital, specify which mode (PSK31, Olivia, CW, etc.) Check In: Note whether the station reported in Directly (Dir) or was Relayed (Rel). If relayed, note the station ID that conducted the Relay. CH3 Contacts: Any contacts made in the station’s local area on CB, FRS, MURS, or other communications devices. Remember when asking for CH3 Check-ins, to have the relaying/reporting station specify which band contact was made."]
+);

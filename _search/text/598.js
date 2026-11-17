@@ -1,0 +1,3 @@
+__lib("t",598,
+["Prepping your way to nuclear survival... This list is organized by category, color-coded by importance, and linked to extensive reviews. Essential Items Suggested Gear Situation-Specific Personal Protection Detection Other Kits Gas Mask Geiger Counter Home Survival Kit Coveralls Dosimeter Bug Out Bag (or variant) Gloves Everyday Carry Boots Decontamination Shelter in Place Kit Clothes (Skivvy Roll) Wet Wipes Bug Out Vehicle Rain Slick/Poncho Dish Soap N95 Masks Scrub Brush Goggles Water for Washing Hardening Self Care Faraday Bags Potassium Iodide Pills Sandbags Shaving Supplies Shovel Crank Flashlight Documents Nuclear Survival Guides For more information visit: https://trueprepper.com/nuclear-survival-kit/"]
+);

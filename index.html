@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="field">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K7HAK'S SHTF Offline Library</title>
+<!-- K7HAK-LIBRARY-UI v1 : do not delete this line (organize.py checks for it so it won't overwrite this page) -->
+<style>
+:root[data-theme="field"]{
+  --bg:#11140d; --bg2:#171c11; --panel:#1b2115; --panel2:#232b1a; --line:#333e27; --text:#ece9d9; --muted:#a5a78f;
+  --accent:#e3a82f; --accent2:#8da13f; --red:#df4b3e; --link:#f2c460; --mark:#6a5410; --markfg:#fff0b8;
+  --sky1:#0b0f08; --sky2:#26301a; --ridge1:#1d2616; --ridge2:#161d10; --ridge3:#0f1409; --tree:#0c1107; --tower:#cfd2b8; --deer:#0c1107; --herotext:#f3efd9; --glow:#e3a82f;
+}
+:root[data-theme="day"]{
+  --bg:#ebe5d2; --bg2:#f3eedd; --panel:#fffdf5; --panel2:#f6f0dd; --line:#d3caae; --text:#2a2920; --muted:#68674f;
+  --accent:#b8780b; --accent2:#5d6f23; --red:#b83227; --link:#8a5700; --mark:#ffe08a; --markfg:#3a2a00;
+  --sky1:#f6d9a8; --sky2:#e9b97a; --ridge1:#a9a577; --ridge2:#7e8a52; --ridge3:#566338; --tree:#34421f; --tower:#3b3a2c; --deer:#2d371a; --herotext:#2a2518; --glow:#b8780b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:44px 44px;background-attachment:fixed;background-blend-mode:soft-light}
+body::before{content:"";position:fixed;inset:0;background:var(--bg);opacity:.93;z-index:-1}
+a{color:var(--link)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+svg.ico{width:1.35em;height:1.35em;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--sky1),var(--sky2));border-bottom:3px solid var(--accent);color:var(--herotext)}
+.hero svg.scene{position:absolute;inset:0;width:100%;height:100%}
+.hero .wrap{position:relative;padding-top:26px;padding-bottom:90px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.callsign{font:700 13px/1 ui-monospace,Consolas,"Courier New",monospace;letter-spacing:.2em;border:1.5px solid var(--accent);color:var(--accent);padding:6px 10px;border-radius:4px;background:rgba(0,0,0,.18)}
+.themebtn{background:rgba(0,0,0,.25);color:inherit;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 12px;cursor:pointer;font:inherit;font-size:13px}
+.brand{display:flex;gap:16px;align-items:center;margin-top:18px}
+.logo{width:74px;height:74px;color:var(--accent);flex:none;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--glow) 55%,transparent))}
+.logo svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+h1{margin:0;font:800 clamp(24px,5vw,44px)/1.05 "Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+h1 span{color:var(--accent)}
+.tag{margin:6px 0 0;opacity:.88;font-size:15px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.18)}
+.badge.red svg{color:#ff6b5e}
+
+/* ---------- search ---------- */
+.searchcard{margin-top:-62px;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.sbox{display:flex;align-items:center;gap:10px;background:var(--bg2);border:2px solid var(--line);border-radius:10px;padding:0 12px;height:58px}
+.sbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.sbox svg{color:var(--accent);width:24px;height:24px}
+#q{flex:1;border:0;background:transparent;color:var(--text);font-size:19px;outline:0;min-width:0}
+#q::placeholder{color:var(--muted)}
+.xbtn{background:none;border:0;color:var(--muted);cursor:pointer;padding:6px;display:none}
+.opts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:12px;font-size:14px;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg label{padding:5px 11px;cursor:pointer;background:var(--bg2);color:var(--muted);user-select:none}
+.seg input{display:none}
+.seg input:checked+span{color:#161207;font-weight:700}
+.seg label:has(input:checked){background:var(--accent);color:#161207}
+select{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit;font-size:14px;max-width:240px}
+.chk{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.try{margin-top:12px;font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:3px 11px;cursor:pointer;font:inherit;font-size:13px}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:4px;margin:22px 0 14px;border-bottom:2px solid var(--line)}
+.tab{background:none;border:0;color:var(--muted);font-weight:700;font-size:15px;font-family:inherit;padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.panel{display:none}.panel.on{display:block}
+
+/* ---------- results ---------- */
+.status{color:var(--muted);font-size:14px;margin:4px 2px 12px}
+.card{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent2);border-radius:10px;padding:14px 16px;margin:0 0 12px}
+.card:hover{border-left-color:var(--accent)}
+.chead{display:flex;gap:12px;align-items:flex-start}
+.cicon{width:42px;height:42px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;color:var(--accent);flex:none}
+.cicon svg{width:26px;height:26px}
+.cicon.med{color:var(--red)}
+.ctitle{font-weight:700;font-size:17px;text-decoration:none;word-break:break-word}
+.ctitle:hover{text-decoration:underline}
+.meta{font-size:13px;color:var(--muted);margin-top:2px}
+.chip{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--text);margin-right:6px}
+.count{margin-left:auto;font-size:13px;color:var(--accent);white-space:nowrap;font-weight:700}
+.snips{list-style:none;margin:10px 0 0;padding:0}
+.snips li{display:flex;gap:10px;padding:7px 0;border-top:1px dashed var(--line);font-size:14.5px}
+.pg{flex:none;font:700 12px ui-monospace,Consolas,monospace;background:var(--panel2);border:1px solid var(--line);padding:2px 7px;border-radius:5px;height:fit-content;text-decoration:none;white-space:nowrap}
+.pg:hover{background:var(--accent);color:#161207;border-color:var(--accent)}
+mark{background:var(--mark);color:var(--markfg);padding:0 2px;border-radius:3px}
+.more{font-size:13px;color:var(--muted);margin-top:8px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.warn{font-size:12px;color:#161207;background:var(--accent);padding:1px 7px;border-radius:999px;font-weight:700}
+.btn{background:var(--accent);color:#161207;border:0;border-radius:8px;padding:9px 16px;font-weight:700;font-size:14px;font-family:inherit;cursor:pointer}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.empty{text-align:center;color:var(--muted);padding:28px 10px}
+.banner{background:var(--panel);border:2px dashed var(--accent);border-radius:12px;padding:20px;margin:24px 0}
+code,kbd{font-family:ui-monospace,Consolas,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:.92em}
+
+/* ---------- browse ---------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;color:var(--text);font:inherit}
+.tile:hover,.tile.on{border-color:var(--accent);background:var(--panel2)}
+.tile svg{width:34px;height:34px;color:var(--accent)}
+.tile.med svg{color:var(--red)}
+.tile b{font-size:15px}.tile small{color:var(--muted)}
+.dlist{margin-top:14px}
+.drow{display:flex;gap:10px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--line)}
+.drow:hover{background:var(--panel)}
+.drow svg{color:var(--accent2)}
+.drow a{font-weight:600;text-decoration:none;word-break:break-word}
+.drow .m{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+.finput{width:100%;max-width:420px;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font:inherit;margin-top:12px}
+
+footer{margin:40px 0 30px;text-align:center;color:var(--muted);font-size:13px}
+footer .art{display:flex;justify-content:center;gap:22px;color:var(--accent2);margin-bottom:8px}
+footer .art svg{width:40px;height:40px}
+.dots{display:inline-block;width:18px;text-align:left}
+@media (max-width:640px){.brand{flex-direction:column;align-items:flex-start}.logo{width:56px;height:56px}.drow{flex-wrap:wrap}.drow .m{margin-left:0}}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-yagi" viewBox="0 0 24 24"><path d="M2.5 12H22M6 4V20M10 6V18M14 7.5V16.5M17.5 8.5V15.5M21 9.5V14.5"/><path d="M12 12V21M9 21h6"/></symbol>
+<symbol id="i-tower" viewBox="0 0 24 24"><path d="M7.5 22 12 6l4.5 16M9.2 17h5.6M10.4 12.4h3.2M6 22h12M12 6V3"/><path d="M15.5 3.2a4.2 4.2 0 0 1 0 3.6M18.3 1.6a7.4 7.4 0 0 1 0 6.8M8.5 3.2a4.2 4.2 0 0 0 0 3.6M5.7 1.6a7.4 7.4 0 0 0 0 6.8"/></symbol>
+<symbol id="i-aid" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7M12 10.2v6.6M8.7 13.5h6.6"/></symbol>
+<symbol id="i-deer" viewBox="0 0 24 24"><path d="M9.2 20.5c-.8-1.8-1.3-3.7-1.3-5.8l1.8-3h4.6l1.8 3c0 2.1-.5 4-1.3 5.8M9.6 11.7 7.2 6M7.2 6 4 4.2M7.2 6 5.7 2.6M8.4 9 5 8.6M14.4 11.7 16.8 6M16.8 6 20 4.2M16.8 6l1.5-3.4M15.6 9l3.4-.4M8.2 12.5 5.8 11.4M15.8 12.5l2.4-1.1"/><circle cx="12" cy="19.2" r=".8" fill="currentColor"/></symbol>
+<symbol id="i-aim" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2.5v6M12 15.5v6M2.5 12h6M15.5 12h6"/><circle cx="12" cy="12" r=".9" fill="currentColor"/></symbol>
+<symbol id="i-knife" viewBox="0 0 24 24"><path d="M3.5 20.5 8 16M8 16 18.5 3.5c1.6 3.6.8 8.4-3.4 11.2z"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s-6 7-6 11.2a6 6 0 0 0 12 0C18 10 12 3 12 3Z"/></symbol>
+<symbol id="i-jar" viewBox="0 0 24 24"><path d="M8 3.5h8v4H8zM7 7.5h10v11.5a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2zM9.5 12.5h5"/></symbol>
+<symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 21V11M12 11c0-4-3-6-7.5-6 0 4 3 6 7.5 6M12 14c0-3 2-5 6.5-5 0 3-2 5-6.5 5"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.6 12l2.3 2.3 4.5-4.6"/></symbol>
+<symbol id="i-mount" viewBox="0 0 24 24"><path d="M2 20 9 8l4 6 3-4.5L22 20zM9 8l-1.8 3.2L9 10.4l1.6.8z"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11L10 22l9-12h-6.5z"/></symbol>
+<symbol id="i-wrench" viewBox="0 0 24 24"><path d="M20.5 7.2a5 5 0 0 1-6.6 4.7L5.6 20.2a2.1 2.1 0 0 1-3-3L11 8.9A5 5 0 0 1 16.3 2.3l-2.9 2.9.4 2.9 2.9.4z"/></symbol>
+<symbol id="i-pack" viewBox="0 0 24 24"><path d="M8.5 7.5a3.5 3.5 0 0 1 7 0M6 8.5h12V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zM9 14h6M9 17h6"/></symbol>
+<symbol id="i-rad" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12V4.5M12 12l6.5 3.8M12 12l-6.5 3.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2 5.6-5.6 2 2-5.6z"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.5c.9 3.6 5.5 5.2 5.5 10.2a5.5 5.5 0 0 1-11 0c0-2.7 1.8-4 2.3-6.5 1.7.9 2.6 2.5 2.7 4.5.7-2.5.6-5.4.5-8.2z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M5 3.5h14v17H7a2 2 0 0 1-2-2zM9 8h6M9 11.5h6"/></symbol>
+<symbol id="i-house" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5.5 9.5V20h13V9.5M10 20v-6h4v6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5.5 5.5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6"/></symbol>
+<symbol id="i-radio" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="11" rx="2"/><path d="M7 9 17 3.5M8 14.5h3M8 17h3"/><circle cx="16.5" cy="15" r="2.5"/></symbol>
+</defs>
+</svg>
+
+<header class="hero">
+  <svg class="scene" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <path id="pine" d="M0 0 8 -17 3 -17 10 -33 5 -33 12 -52 19 -33 14 -33 21 -17 16 -17 24 0z"/>
+    </defs>
+    <g fill="#fff" opacity=".55">
+      <circle cx="90" cy="40" r="1.3"/><circle cx="210" cy="22" r="1"/><circle cx="330" cy="58" r="1.2"/><circle cx="480" cy="30" r="1"/>
+      <circle cx="610" cy="52" r="1.4"/><circle cx="740" cy="24" r="1"/><circle cx="860" cy="62" r="1.2"/><circle cx="1130" cy="36" r="1.2"/><circle cx="1060" cy="70" r="1"/>
+    </g>
+    <path fill="var(--ridge1)" d="M0 196 90 150 170 176 262 118 342 166 432 140 522 188 612 128 702 172 792 122 882 162 972 134 1062 172 1152 140 1200 160V300H0z"/>
+    <path fill="var(--ridge2)" d="M0 232Q120 190 232 220T452 208T692 224T932 202T1200 220V300H0z"/>
+    <path fill="var(--ridge3)" d="M0 262Q150 238 300 256T600 252T900 258T1200 248V300H0z"/>
+    <g fill="var(--tree)">
+      <use href="#pine" x="20" y="262"/><use href="#pine" x="52" y="268" transform="translate(0 0) scale(1)"/><use href="#pine" x="84" y="260"/>
+      <use href="#pine" x="560" y="258"/><use href="#pine" x="590" y="264"/><use href="#pine" x="620" y="257"/>
+      <use href="#pine" x="740" y="262"/><use href="#pine" x="772" y="256"/><use href="#pine" x="1120" y="258"/><use href="#pine" x="1150" y="264"/><use href="#pine" x="1176" y="256"/>
+    </g>
+    <!-- deer on the ridge -->
+    <g fill="var(--deer)" transform="translate(372 214)">
+      <ellipse cx="0" cy="-22" rx="19" ry="9"/>
+      <path d="M-14 -16 -16 0 -13 0 -9 -14zM-4 -14-5 0-2 0 0 -14zM8 -14 8 0 11 0 13 -14zM14 -16 17 0 20 0 18 -17z"/>
+      <path d="M14 -26 24 -44 31 -42 28 -34 20 -22z"/>
+      <ellipse cx="31" cy="-45" rx="6.5" ry="4.2" transform="rotate(-20 31 -45)"/>
+      <path d="M27 -49 26 -55 29 -51zM33 -50 36 -56 36 -50z"/>
+      <path d="M28 -50 22 -64 18 -62M25 -57 19 -57M33 -50 38 -64 43 -62M36 -57 42 -57" stroke="var(--deer)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M-19 -26 -24 -30 -20 -22z"/>
+    </g>
+    <!-- radio tower + yagi, signal arcs -->
+    <g stroke="var(--tower)" stroke-width="2" fill="none" stroke-linecap="round" transform="translate(1000 0)">
+      <path d="M-22 262 0 92 22 262M-18 232H18M-14 200H14M-10 166H10M-6 134H6M-18 232 14 200M18 232-14 200M-14 200 10 166M14 200-10 166"/>
+      <path d="M-4 92H4M0 92V84"/>
+      <path d="M-36 80H36" stroke-width="2.4"/>
+      <path d="M-32 72V88M-18 68V92M-4 72V88M10 74V86M26 76V84" stroke-width="2"/>
+      <g stroke="var(--glow)" stroke-width="2" opacity=".9">
+        <path d="M-52 66a22 22 0 0 0 0 28M-68 56a38 38 0 0 0 0 48M-84 46a54 54 0 0 0 0 68" opacity=".85"/>
+      </g>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div class="topbar">
+      <span class="callsign">K7HAK</span>
+      <button class="themebtn" id="themebtn" type="button" title="Switch theme">☀ / ☾ Theme</button>
+    </div>
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24"><use href="#i-tower"/></svg></div>
+      <div>
+        <h1>K7HAK'S <span>SHTF</span> Offline Library</h1>
+        <p class="tag">No signal required. Searches the text inside every manual, not just the file names.</p>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge"><svg class="ico"><use href="#i-yagi"/></svg> Radio &amp; Comms</span>
+      <span class="badge red"><svg class="ico"><use href="#i-aid"/></svg> First Aid</span>
+      <span class="badge"><svg class="ico"><use href="#i-deer"/></svg> Hunting &amp; Trapping</span>
+      <span class="badge"><svg class="ico"><use href="#i-drop"/></svg> Water</span>
+      <span class="badge"><svg class="ico"><use href="#i-flame"/></svg> Fire &amp; Shelter</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="searchcard" aria-label="Search">
+    <div class="sbox">
+      <svg class="ico"><use href="#i-search"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder='Search inside every document...  try "broken toe"'>
+      <button class="xbtn" id="xbtn" type="button" aria-label="Clear"><svg class="ico"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="opts">
+      <span>Words:</span>
+      <span class="seg"><label><input type="radio" name="mode" value="all" checked><span>All</span></label><label><input type="radio" name="mode" value="any"><span>Any</span></label></span>
+      <span>Match:</span>
+      <span class="seg"><label><input type="radio" name="match" value="exact" checked><span>Whole words</span></label><label><input type="radio" name="match" value="partial"><span>Starts with</span></label></span>
+      <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+      <label class="chk"><input type="checkbox" id="titles"> Titles only</label>
+    </div>
+    <div class="try" id="try"></div>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="search" aria-selected="true">Results</button>
+    <button class="tab" role="tab" data-tab="browse" aria-selected="false">Browse</button>
+    <button class="tab" role="tab" data-tab="about" aria-selected="false">About &amp; Updating</button>
+  </div>
+
+  <section class="panel on" id="p-search"><div class="status" id="status" aria-live="polite"></div><div id="results"></div></section>
+  <section class="panel" id="p-browse"><div class="tiles" id="tiles"></div><div class="dlist" id="dlist"></div></section>
+  <section class="panel" id="p-about"></section>
+
+  <footer>
+    <div class="art">
+      <svg class="ico"><use href="#i-yagi"/></svg><svg class="ico" style="color:var(--red)"><use href="#i-aid"/></svg><svg class="ico"><use href="#i-deer"/></svg><svg class="ico"><use href="#i-compass"/></svg><svg class="ico"><use href="#i-tower"/></svg>
+    </div>
+    73 de K7HAK &middot; Everything here runs from the folder it is in. No internet, no drive letter, no install.
+  </footer>
+</div>
+
+<noscript><div class="wrap"><div class="banner">This library needs JavaScript turned on in your browser.</div></div></noscript>
+
+<script>
+/* data loader hook. Index files call this when they load (works from file:// where fetch() is blocked) */
+window.LIB={cache:{},pending:{}};
+window.__lib=function(kind,key,data){var k=kind+':'+key;LIB.cache[k]=data;var p=LIB.pending[k];if(p){delete LIB.pending[k];p.forEach(function(f){f(data)})}};
+</script>
+<script src="_search/manifest.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var escRe=function(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')};
+
+/* CORE-START (must stay identical to build_search_index.py) */
+var STOP=new Set('the and for with that this from are was were have has had not but you your can will any all may which their they them been would should into than then when where what such other these those there also each more most some only its our out who how why does did use used using via per etc one two'.split(' '));
+var MIN_TOKEN=3, MAX_TOKEN=30;
+function stem(w){
+  if(w.length>4){
+    if(w.endsWith('ies')) w=w.slice(0,-3)+'y';
+    else if(w.endsWith('sses')) w=w.slice(0,-2);
+    else if(/(xes|ches|shes)$/.test(w)) w=w.slice(0,-2);
+  }
+  if(w.length>3&&w.endsWith('s')&&!/(ss|us|is)$/.test(w)) w=w.slice(0,-1);
+  if(w.length>5&&w.endsWith('ing')&&w.length-3>=4) w=w.slice(0,-3);
+  else if(w.length>5&&w.endsWith('ed')&&w.length-2>=4) w=w.slice(0,-2);
+  if(w.length>4&&w[w.length-1]===w[w.length-2]&&'aeioulsz'.indexOf(w[w.length-1])<0) w=w.slice(0,-1);
+  return w;
+}
+function tokenize(s){return s.toLowerCase().match(/[a-z0-9]+/g)||[];}
+/* CORE-END */
+window.__LIBCORE={stem:stem,tokenize:tokenize,STOP:STOP};
+
+/* ---------- setup ---------- */
+var M=window.LIB_MANIFEST;
+var resultsEl=$('#results'), statusEl=$('#status'), qEl=$('#q');
+$('#themebtn').addEventListener('click',function(){
+  var t=document.documentElement.getAttribute('data-theme')==='field'?'day':'field';
+  document.documentElement.setAttribute('data-theme',t); try{localStorage.setItem('k7hak.theme',t)}catch(e){}
+});
+try{var th=localStorage.getItem('k7hak.theme'); if(th) document.documentElement.setAttribute('data-theme',th)}catch(e){}
+$$('.tab').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab)})});
+function showTab(n){
+  $$('.tab').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===n))});
+  $$('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+n)});
+}
+
+if(!M){
+  resultsEl.innerHTML='<div class="banner"><h2 style="margin-top:0">The search index has not been built yet</h2>'+
+  '<p>Double-click <code>Update-Index.bat</code> in this folder (or run <code>python build_search_index.py</code>). '+
+  'It reads every PDF in the folders next to this page and creates a <code>_search</code> folder. Then reload this page.</p>'+
+  '<p>Python is only needed to build the index. Once it exists, this page works in any browser, offline.</p></div>';
+  $('#try').style.display='none';
+  return;
+}
+
+var docs=M.docs, docById=new Map(docs.map(function(d){return [d.id,d]}));
+var common=new Set(M.common||[]), NP=Math.max(M.pages||1,1);
+var cats=new Map();
+docs.forEach(function(d){ if(!cats.has(d.c)) cats.set(d.c,[]); cats.get(d.c).push(d); });
+var catNames=Array.from(cats.keys()).sort(function(a,b){return a.localeCompare(b)});
+
+function iconFor(name){
+  var n=name.toLowerCase();
+  var map=[[/radio|ham|amrron|comm/,'i-yagi'],[/first aid|medic|hesperian|health/,'i-aid'],[/hunt|trap/,'i-deer'],[/meat|butcher/,'i-knife'],
+    [/water|sanit/,'i-drop'],[/food|preserv|canning/,'i-jar'],[/garden|farm|seed|homestead/,'i-sprout'],[/secur|defen/,'i-shield'],
+    [/disaster|shelter|earthquake|volcano|resilien|wildfire/,'i-mount'],[/power|heat|energy|solar/,'i-bolt'],[/repair|tool/,'i-wrench'],
+    [/bug|bag|kit/,'i-pack'],[/nuclear|cbrn|radiation/,'i-rad'],[/military|army|manual|combat/,'i-star'],[/bushcraft|fire|camp/,'i-flame'],
+    [/survival|navigation|map/,'i-compass'],[/reference/,'i-book']];
+  for(var i=0;i<map.length;i++) if(map[i][0].test(n)) return map[i][1];
+  return 'i-book';
+}
+function isMed(name){return /first aid|medic|hesperian|health/i.test(name)}
+function svgIcon(id,cls){return '<svg class="ico '+(cls||'')+'"><use href="#'+id+'"/></svg>'}
+function humanSize(n){if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(0)+' KB';return (n/1048576).toFixed(1)+' MB'}
+function docHref(d,page,words){
+  var p=d.p.split('/').map(encodeURIComponent).join('/');
+  if(d.e==='pdf'&&page){p+='#page='+page; if(words) p+='&search='+encodeURIComponent(words);}
+  return p;
+}
+
+/* category menu + quick-try chips */
+var catEl=$('#cat');
+catNames.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c+' ('+cats.get(c).length+')';catEl.appendChild(o)});
+var tryEl=$('#try');
+function renderTry(){
+  var recent=[];try{recent=JSON.parse(localStorage.getItem('k7hak.recent')||'[]')}catch(e){}
+  var base=['broken toe','tourniquet','water purification','146.520','hypothermia','field dressing deer','generator carbon monoxide'];
+  var list=recent.concat(base.filter(function(x){return recent.indexOf(x)<0})).slice(0,9);
+  tryEl.innerHTML='<span>Try:</span>'+list.map(function(x){return '<button class="pill" type="button" data-q="'+esc(x)+'">'+esc(x)+'</button>'}).join('');
+}
+tryEl.addEventListener('click',function(e){var b=e.target.closest('[data-q]');if(b){qEl.value=b.dataset.q;go(true)}});
+renderTry();
+
+/* ---------- data loading ---------- */
+var textOrder=[];
+function loadData(kind,key){
+  var k=kind+':'+key;
+  if(k in LIB.cache) return Promise.resolve(LIB.cache[k]);
+  return new Promise(function(res){
+    if(LIB.pending[k]){LIB.pending[k].push(res);return}
+    LIB.pending[k]=[res];
+    var s=document.createElement('script');
+    s.src='_search/'+(kind==='i'?'idx/':'text/')+key+'.js';
+    var fail=function(){ if(!(k in LIB.cache)){LIB.cache[k]=null; var p=LIB.pending[k];delete LIB.pending[k];if(p)p.forEach(function(f){f(null)})} s.remove() };
+    s.onerror=fail; s.onload=function(){ if(!(k in LIB.cache)) fail(); else s.remove() };
+    document.head.appendChild(s);
+  }).then(function(v){
+    if(kind==='t'){ textOrder.push(k); while(textOrder.length>45){ delete LIB.cache[textOrder.shift()] } }
+    return v;
+  });
+}
+var decoded=new Map();
+function termPostings(term){
+  if(decoded.has(term)) return Promise.resolve(decoded.get(term));
+  return loadData('i',term.slice(0,2)).then(function(shard){
+    var out=[];
+    if(shard&&shard[term]){var d=shard[term],acc=0;out=new Array(d.length);for(var i=0;i<d.length;i++){acc+=d[i];out[i]=acc}}
+    decoded.set(term,out);return out;
+  });
+}
+function prefixPostings(raw,st){
+  return loadData('i',raw.slice(0,2)).then(function(shard){
+    if(!shard) return [];
+    var keys=[];for(var t in shard){ if(t.indexOf(raw)===0||t.indexOf(st)===0){keys.push(t); if(keys.length>400)break} }
+    return Promise.all(keys.map(termPostings)).then(function(ls){
+      var all=[].concat.apply([],ls).sort(function(a,b){return a-b});
+      return all.filter(function(v,i){return i===0||v!==all[i-1]});
+    });
+  });
+}
+function intersect(a,b){var i=0,j=0,o=[];while(i<a.length&&j<b.length){if(a[i]===b[j]){o.push(a[i]);i++;j++}else if(a[i]<b[j])i++;else j++}return o}
+
+/* ---------- searching ---------- */
+function termPatterns(t,partial){
+  if(partial) return new RegExp('\\b'+escRe(t.raw)+'[a-z0-9]*','gi');
+  var v=[escRe(t.st)+'[a-z]*',escRe(t.raw)];
+  if(t.st.slice(-1)==='y') v.push(escRe(t.st.slice(0,-1))+'ies');
+  return new RegExp('\\b(?:'+v.join('|')+')','gi');
+}
+function findMatches(text,pats){
+  var out=[];
+  pats.forEach(function(re,ti){re.lastIndex=0;var m;while((m=re.exec(text))){out.push({s:m.index,e:m.index+m[0].length,t:ti});if(m.index===re.lastIndex)re.lastIndex++;if(out.length>500)break}});
+  out.sort(function(a,b){return a.s-b.s});return out;
+}
+function bestWindow(ms,nT,width){
+  var best=null,cnt=new Array(nT).fill(0),distinct=0,l=0;
+  for(var r=0;r<ms.length;r++){
+    if(cnt[ms[r].t]++===0)distinct++;
+    while(ms[r].e-ms[l].s>width){if(--cnt[ms[l].t]===0)distinct--;l++}
+    var span=ms[r].e-ms[l].s;
+    if(!best||distinct>best.distinct||(distinct===best.distinct&&span<best.span))best={distinct:distinct,span:span,s:ms[l].s,e:ms[r].e};
+  }
+  return best;
+}
+function highlight(text,pats){
+  var ms=findMatches(text,pats),out='',pos=0;
+  ms.forEach(function(m){ if(m.s<pos)return; out+=esc(text.slice(pos,m.s))+'<mark>'+esc(text.slice(m.s,m.e))+'</mark>'; pos=m.e });
+  return out+esc(text.slice(pos));
+}
+function snippet(text,win,pats){
+  var s=Math.max(0,win.s-90),e=Math.min(text.length,win.e+150);
+  if(e-s>340){e=s+340}
+  if(s>0){var a=text.indexOf(' ',s);if(a>-1&&a<win.s)s=a+1}
+  if(e<text.length){var b=text.lastIndexOf(' ',e);if(b>win.e)e=b}
+  return (s>0?'… ':'')+highlight(text.slice(s,e),pats)+(e<text.length?' …':'');
+}
+
+var opts={mode:'all',partial:false,cat:'',titles:false};
+function readOpts(){
+  opts.mode=$('input[name=mode]:checked').value; opts.partial=$('input[name=match]:checked').value==='partial';
+  opts.cat=catEl.value; opts.titles=$('#titles').checked;
+}
+
+function search(rawQuery,limit){
+  var t0=performance.now();
+  var phrases=[];
+  var stripped=rawQuery.replace(/"([^"]+)"/g,function(m,p){phrases.push(tokenize(p));return ' '+p+' '});
+  var raws=tokenize(stripped), terms=[], seen={}, ignored=[];
+  raws.forEach(function(r){
+    var st=stem(r);
+    if(r.length<MIN_TOKEN||STOP.has(r)||common.has(st)){ignored.push(r);return}
+    if(seen[st])return; seen[st]=1; terms.push({raw:r,st:st});
+  });
+  var allRaws=raws.slice();
+  var hint=raws.join(' ');
+  function inCat(d){return !opts.cat||d.c===opts.cat}
+  function titleScore(d){
+    if(!terms.length) return 0;
+    var hay=(d.t+' '+d.p).toLowerCase(),n=0;
+    terms.forEach(function(t){if(hay.indexOf(t.raw)>-1||hay.indexOf(t.st)>-1)n++});
+    return n===terms.length?8:(opts.mode==='any'&&n?2:0);
+  }
+  var out={docs:[],totalPages:0,totalDocs:0,ignored:ignored,terms:terms,hint:hint,ms:0,more:false};
+
+  /* titles with no usable word (e.g. only "21 76"): plain substring match on titles */
+  if(!terms.length){
+    var needle=rawQuery.toLowerCase().replace(/"/g,'').trim();
+    var hits=docs.filter(function(d){return inCat(d)&&needle&&(d.t+' '+d.p).toLowerCase().indexOf(needle)>-1});
+    out.docs=hits.slice(0,limit).map(function(d){return {d:d,score:1,pages:[],snips:[],titleHit:true}});
+    out.totalDocs=hits.length;out.more=hits.length>limit;out.ms=performance.now()-t0;out.titleOnlyReason=true;return Promise.resolve(out);
+  }
+  var idf=[];
+  var bodyP=opts.titles?Promise.resolve([]):Promise.all(terms.map(function(t){return opts.partial?prefixPostings(t.raw,t.st):termPostings(t.st)}));
+  return bodyP.then(function(lists){
+    var cand=[],pageScore=null;
+    if(lists.length){
+      lists.forEach(function(l,i){idf[i]=Math.log(1+NP/Math.max(1,l.length))});
+      if(opts.mode==='all'){
+        if(!lists.some(function(l){return l.length===0})){
+          var order=lists.map(function(_,i){return i}).sort(function(a,b){return lists[a].length-lists[b].length});
+          cand=lists[order[0]];for(var k=1;k<order.length&&cand.length;k++)cand=intersect(cand,lists[order[k]]);
+        }
+      }else{
+        var mp=new Map();lists.forEach(function(l,i){l.forEach(function(v){mp.set(v,(mp.get(v)||0)+idf[i])})});
+        cand=Array.from(mp.keys()).sort(function(a,b){return a-b});pageScore=mp;
+      }
+    }
+    var byDoc=new Map();
+    cand.forEach(function(v){
+      var id=Math.floor(v/65536),pg=v%65536,d=docById.get(id);
+      if(!d||!inCat(d))return;
+      var e=byDoc.get(id);if(!e){e={d:d,pages:[],s:0};byDoc.set(id,e)}
+      e.pages.push(pg);e.s+=pageScore?pageScore.get(v):0;
+    });
+    var idfSum=idf.reduce(function(a,b){return a+b},0);
+    var pool=[];
+    byDoc.forEach(function(e){
+      var base=pageScore?e.s/e.pages.length:idfSum;
+      e.pre=base+Math.log(1+e.pages.length)*1.5+titleScore(e.d);
+      pool.push(e);
+    });
+    /* title-only matches (also catches scanned files that have no text) */
+    docs.forEach(function(d){
+      if(byDoc.has(d.id)||!inCat(d))return;
+      var ts=titleScore(d); if(ts>=8) pool.push({d:d,pages:[],s:0,pre:ts+4,titleHit:true});
+    });
+    pool.sort(function(a,b){return b.pre-a.pre});
+    out.totalDocs=pool.length;out.totalPages=cand.length;
+    var cap=phrases.length?Math.max(limit,60):limit;
+    var sel=pool.slice(0,cap);out.more=pool.length>cap;
+    var pats=terms.map(function(t){return termPatterns(t,opts.partial)});
+    var phraseRes=phrases.filter(function(p){return p.length}).map(function(p){return new RegExp(p.map(escRe).join('[^a-z0-9]+'),'i')});
+    var fullPhrase=allRaws.length>1?new RegExp(allRaws.map(escRe).join('[^a-z0-9]+'),'i'):null;
+    return Promise.all(sel.map(function(e){return e.pages.length?loadData('t',e.d.id):Promise.resolve(null)})).then(function(texts){
+      var final=[];
+      sel.forEach(function(e,i){
+        var tx=texts[i],ranked=[];
+        if(tx){
+          e.pages.slice(0,120).forEach(function(pg){
+            var text=tx[pg-1]||'';if(!text)return;
+            if(phraseRes.some(function(re){return !re.test(text)}))return;
+            var ms=findMatches(text,pats),w=bestWindow(ms,terms.length,260);if(!w)return;
+            var wide=bestWindow(ms,terms.length,700),sc=w.distinct*2;
+            if(wide&&wide.distinct===terms.length)sc+=wide.span<150?3:wide.span<400?1.5:0.5;
+            if(fullPhrase&&fullPhrase.test(text))sc+=6;
+            ranked.push({pg:pg,sc:sc,text:text,w:w});
+          });
+          ranked.sort(function(a,b){return b.sc-a.sc});
+          if(phraseRes.length&&!ranked.length)return;
+        }
+        var top=ranked.slice(0,3);
+        var fin=(top.length?top[0].sc+0.2*top.slice(1).reduce(function(a,b){return a+b.sc},0):0)+e.pre;
+        final.push({d:e.d,score:fin,pages:e.pages,titleHit:!!e.titleHit,
+          snips:top.map(function(r){return {pg:r.pg,html:snippet(r.text,r.w,pats)}}),
+          pageOrder:ranked.length?ranked.map(function(r){return r.pg}):e.pages});
+      });
+      final.sort(function(a,b){return b.score-a.score});
+      out.docs=final;out.ms=performance.now()-t0;return out;
+    });
+  });
+}
+
+/* ---------- rendering ---------- */
+var shown=30,lastQuery='';
+function renderResults(res,query){
+  var qwords=res.hint;
+  if(!res.docs.length){
+    resultsEl.innerHTML='<div class="empty"><h3>No matches</h3><p>Try fewer words, switch <b>Words</b> to <i>Any</i>, or <b>Match</b> to <i>Starts with</i>.</p>'+
+      (res.ignored.length?'<p>Ignored very common words: '+res.ignored.map(esc).join(', ')+'</p>':'')+'</div>';
+    statusEl.textContent='0 results ('+res.ms.toFixed(0)+' ms)';return;
+  }
+  var pgTxt=res.totalPages?res.totalPages.toLocaleString()+' page'+(res.totalPages===1?'':'s')+' in ':'';
+  statusEl.innerHTML=pgTxt+res.totalDocs+' document'+(res.totalDocs===1?'':'s')+' &middot; '+(res.ms/1000).toFixed(2)+' s'+
+    (res.ignored.length?' &middot; ignored common words: '+res.ignored.map(esc).join(', '):'')+
+    (res.titleOnlyReason?' &middot; title match only':'');
+  var html=res.docs.map(function(r){
+    var d=r.d,first=r.snips.length?r.snips[0].pg:(r.pages[0]||1);
+    var href=docHref(d,first,qwords);
+    var meta='<span class="chip">'+esc(d.c)+'</span>'+(d.s?esc(d.s)+' &middot; ':'')+(d.n?d.n+' '+(d.e==='pdf'?'pages':'sections')+' &middot; ':'')+humanSize(d.b)+(d.o?' &middot; OCR text':'');
+    var lis=r.snips.map(function(s){return '<li><a class="pg" target="_blank" rel="noopener" href="'+docHref(d,s.pg,qwords)+'">'+(d.e==='pdf'?'p. ':'§ ')+s.pg+'</a><span>'+s.html+'</span></li>'}).join('');
+    var rest=r.pageOrder.filter(function(p){return !r.snips.some(function(s){return s.pg===p})}).slice(0,40);
+    var more=rest.length?'<div class="more">Also on:'+rest.map(function(p){return '<a class="pg" target="_blank" rel="noopener" href="'+docHref(d,p,qwords)+'">'+p+'</a>'}).join('')+(r.pages.length>rest.length+r.snips.length?' <span>+ more</span>':'')+'</div>':'';
+    var cnt=r.pages.length?r.pages.length+' page'+(r.pages.length===1?'':'s'):'title match';
+    return '<article class="card"><div class="chead"><div class="cicon '+(isMed(d.c)?'med':'')+'">'+svgIcon(iconFor(d.c))+'</div>'+
+      '<div style="min-width:0"><a class="ctitle" target="_blank" rel="noopener" href="'+href+'">'+esc(d.t)+'</a><div class="meta">'+meta+'</div></div>'+
+      '<span class="count">'+cnt+'</span></div>'+(lis?'<ul class="snips">'+lis+'</ul>':'')+more+'</article>';
+  }).join('');
+  if(res.more) html+='<div class="empty"><button class="btn" id="moreBtn" type="button">Show more documents</button></div>';
+  resultsEl.innerHTML=html;
+  var mb=$('#moreBtn');if(mb)mb.addEventListener('click',function(){shown+=30;go(false)});
+}
+
+var timer=null,token=0;
+function go(reset){
+  readOpts();
+  var q=qEl.value.trim();
+  $('#xbtn').style.display=q?'block':'none';
+  showTab('search');
+  if(reset)shown=30;
+  if(!q){resultsEl.innerHTML='<div class="empty">'+svgIcon('i-search')+'<p>Type a word or phrase above. Results come from the text inside the documents, with the page number so you can jump straight to it.</p></div>';statusEl.textContent=docs.length.toLocaleString()+' documents, '+NP.toLocaleString()+' searchable pages';return}
+  var my=++token;
+  statusEl.innerHTML='Searching<span class="dots"></span>';
+  try{history.replaceState(null,'','#q='+encodeURIComponent(q))}catch(e){}
+  search(q,shown).then(function(res){
+    if(my!==token)return;
+    renderResults(res,q);
+    if(reset&&res.docs.length){
+      try{var r=JSON.parse(localStorage.getItem('k7hak.recent')||'[]');r=[q].concat(r.filter(function(x){return x!==q})).slice(0,6);localStorage.setItem('k7hak.recent',JSON.stringify(r));renderTry()}catch(e){}
+    }
+  }).catch(function(err){statusEl.textContent='Search error: '+err.message;console.error(err)});
+}
+qEl.addEventListener('input',function(){clearTimeout(timer);$('#xbtn').style.display=qEl.value?'block':'none';timer=setTimeout(function(){if(qEl.value.trim().length>=3||!qEl.value.trim())go(true)},300)});
+qEl.addEventListener('keydown',function(e){if(e.key==='Enter'){clearTimeout(timer);go(true)}if(e.key==='Escape'){qEl.value='';go(true)}});
+$('#xbtn').addEventListener('click',function(){qEl.value='';qEl.focus();go(true)});
+$$('input[name=mode],input[name=match],#titles,#cat').forEach(function(el){el.addEventListener('change',function(){go(true)})});
+document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==qEl&&!/input|select|textarea/i.test(document.activeElement.tagName)){e.preventDefault();qEl.focus()}});
+
+/* ---------- browse ---------- */
+var browseCat=null;
+function renderBrowse(){
+  $('#tiles').innerHTML=catNames.map(function(c){
+    return '<button class="tile '+(isMed(c)?'med ':'')+(c===browseCat?'on':'')+'" type="button" data-c="'+esc(c)+'">'+svgIcon(iconFor(c))+'<b>'+esc(c)+'</b><small>'+cats.get(c).length+' files</small></button>';
+  }).join('');
+  var list=browseCat?cats.get(browseCat):[];
+  var box=$('#dlist');
+  if(!browseCat){box.innerHTML='<p class="status">Pick a category to list its files, or use the search box to look inside all of them.</p>';return}
+  var sorted=list.slice().sort(function(a,b){return (a.s+a.t).localeCompare(b.s+b.t)});
+  box.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><h3 style="margin:0">'+esc(browseCat)+'</h3>'+
+    '<button class="btn ghost" id="searchCat" type="button">Search only this category</button></div>'+
+    '<input class="finput" id="bfilter" placeholder="Filter this list by name..." autocomplete="off"><div id="brows"></div>';
+  function rows(f){
+    f=(f||'').toLowerCase();
+    $('#brows').innerHTML=sorted.filter(function(d){return !f||(d.t+' '+d.s).toLowerCase().indexOf(f)>-1}).map(function(d){
+      return '<div class="drow">'+svgIcon('i-doc')+'<div><a target="_blank" rel="noopener" href="'+docHref(d)+'">'+esc(d.t)+'</a><div class="meta">'+(d.s?esc(d.s):'')+'</div></div>'+
+        '<span class="m">'+(d.x?'':'<span class="warn">scan: title search only</span> ')+(d.n?d.n+' p &middot; ':'')+humanSize(d.b)+'</span></div>';
+    }).join('')||'<p class="status">Nothing matches that filter.</p>';
+  }
+  rows('');$('#bfilter').addEventListener('input',function(){rows(this.value)});
+  $('#searchCat').addEventListener('click',function(){catEl.value=browseCat;showTab('search');qEl.focus();go(true)});
+}
+$('#tiles').addEventListener('click',function(e){var b=e.target.closest('[data-c]');if(b){browseCat=b.dataset.c;renderBrowse()}});
+renderBrowse();
+
+/* ---------- about ---------- */
+(function(){
+  var scans=docs.filter(function(d){return !d.x});
+  $('#p-about').innerHTML=
+  '<div class="card"><h3 style="margin-top:0">This library</h3><p><b>'+docs.length.toLocaleString()+'</b> documents &middot; <b>'+NP.toLocaleString()+'</b> searchable pages &middot; index built <b>'+esc(M.built||'?')+'</b></p></div>'+
+  '<div class="card"><h3 style="margin-top:0">Adding files or folders later</h3>'+
+  '<p>A web page cannot look inside folders by itself, so new material has to be indexed once:</p>'+
+  '<ol><li>Copy the new folder (or PDFs) anywhere inside this library folder, next to the others.</li>'+
+  '<li>Double-click <code>Update-Index.bat</code>. It finds every new, changed or deleted file and only reads those, so it is quick.</li>'+
+  '<li>Reload this page. Done.</li></ol>'+
+  '<p>Moving to a USB drive: copy the whole library folder (this page, <code>_search</code>, and your category folders). Links are relative, so the drive letter does not matter.</p></div>'+
+  '<div class="card"><h3 style="margin-top:0">Search tips</h3><ul>'+
+  '<li><kbd>/</kbd> jumps to the search box, <kbd>Esc</kbd> clears it.</li>'+
+  '<li><b>All</b> finds pages containing every word; <b>Any</b> finds pages with at least one. Pages where the words sit close together, or as an exact phrase, are ranked higher.</li>'+
+  '<li>Put quotes around words to require an exact phrase: <code>"broken toe"</code>.</li>'+
+  '<li>Plurals and endings are handled (toe / toes, bleed / bleeding). <b>Starts with</b> also finds longer words (fract finds fracture).</li>'+
+  '<li>Result links open the PDF at that page. Chrome and Edge also highlight the words in the PDF.</li>'+
+  '<li>Very short numbers (like 21) are not indexed, but file names are always searchable, so <code>FM 21-76</code> works as a title search.</li></ul></div>'+
+  '<div class="card"><h3 style="margin-top:0">Scanned files ('+scans.length+')</h3>'+
+  (scans.length?'<p>These are pictures of pages with no text layer, so only their titles can be searched. Run <code>Update-Index-OCR.bat</code> (needs the free Tesseract program) to read them. It is slow, but it only has to be done once.</p><ul>'+
+    scans.slice(0,60).map(function(d){return '<li><a target="_blank" rel="noopener" href="'+docHref(d)+'">'+esc(d.t)+'</a> <small>('+esc(d.c)+')</small></li>'}).join('')+(scans.length>60?'<li>... and '+(scans.length-60)+' more</li>':'')+'</ul>':'<p>None. Everything is searchable.</p>')+'</div>';
+})();
+
+/* ---------- start ---------- */
+(function(){
+  var h=location.hash.match(/[#&]q=([^&]*)/);
+  if(h){try{qEl.value=decodeURIComponent(h[1])}catch(e){}}
+  go(true);
+  if(!h)qEl.focus();
+})();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+__lib("t",617,
+["Prepping your way to family evacuation... This list is organized by category, color-coded by importance, and linked to extensive reviews. Essential Items Suggested Gear Situation-Specific Bug Out Bag Power & Energy Personal Items Bug Out Backpack Headlamp Contact Information Glow Sticks Notebook Shelter Pen Sleeping Bag or Bivy Nav & Comms Comfort Items Lighter Whistle Games Ferro Rod Weather Radio Walkie-Talkie Clothing Compass Clothes (Skivvy Rolls) Local Maps Poncho N95 Masks Food Gloves Snack Food Earplugs Water Tools Water Bottle Multitool Water Filter Bushcraft Knife For more information visit: https://trueprepper.com/kids-bug-out-bag/"]
+);

@@ -1,0 +1,3 @@
+__lib("t",612,
+["Prepping your way to help your best friend... This list is organized by category, color-coded by importance, and linked to extensive reviews. Essential Items Suggested Gear Situation-Specific Wearable Food Miscellaneous Dog Hiking Pack Dog Food (72 hours) Carrying Case (small dogs) Collar Towel Leash Water Dog Toys Dog Boots Water Container (72 hours) Waste Bags Dog Raincoat Collapsible Bowl Sleeping Pad Paw Wax First Aid Light Flea & Tick Treatment Dog Light Sulfadene Glow Sticks Hydrogen Peroxide Electroyte Powder Documents Tick Key Contact Information Flagyl Antibiotics Vet Information (Vaccines) Diphenhydramine Picture of Dog Gauze For more information visit: https://trueprepper.com/dog-bug-out-bag/"]
+);
