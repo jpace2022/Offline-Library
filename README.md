@@ -16,9 +16,13 @@ There are two parts: copy the library folder to the device, and install the app.
 
 Copy the whole library folder (the one containing `index.html` and `_search`) to the device's storage, for example `Download/Offline-Library`. Copying over USB or using a file-transfer app both work. Make sure the copy is complete, since the app needs `index.html` and `_search` in the same folder.
 
-### 2. Build the app
+Large libraries can take a while to copy. Copy the folder as a whole rather than file by file, and keep the folder name and structure unchanged.
 
-The app is built with the plain Android SDK tools. Gradle is not needed.
+### 2. Get the app
+
+**Option A: use the prebuilt APK.** [android/OfflineLibrary.apk](android/OfflineLibrary.apk) is included in the repository. Download it and go to step 3.
+
+**Option B: build it yourself.** The app is built with the plain Android SDK tools. Gradle is not needed.
 
 Prerequisites (Windows):
 
@@ -33,13 +37,13 @@ Build from the repository root:
 bash android/build_apk.sh
 ```
 
-The signed APK is written to `android/build/OfflineLibrary.apk`.
+The signed APK is written to `android/build/OfflineLibrary.apk`. To update the prebuilt copy in the repository, copy it over `android/OfflineLibrary.apk`.
 
 The first build creates `android/offline-library.keystore`. Keep this file. Android only accepts updates to an app that are signed with the same key, so a new keystore means users have to uninstall the old app first. The keystore is git-ignored and must not be committed.
 
 ### 3. Install the APK
 
-1. Copy `OfflineLibrary.apk` to the device.
+1. Copy `OfflineLibrary.apk` (from `android/`, or your own build from `android/build/`) to the device.
 2. Open it in a file manager. When Android asks, allow installs from that app (**Settings > Apps > Special access > Install unknown apps**).
 3. Tap **Install**.
 
