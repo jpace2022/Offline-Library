@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.offlinelibrary">
+
+    <!-- Not used to reach the internet: the library is served from the phone itself.
+         WebView simply refuses to load any https:// URL without this permission. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:label="Offline Library"
+        android:theme="@android:style/Theme.Material.Light.DarkActionBar"
+        android:allowBackup="false">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
